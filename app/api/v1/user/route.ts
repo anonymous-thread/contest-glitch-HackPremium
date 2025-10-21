@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
+import { isPremiumEmail } from "@/lib/premium-operatives";
 
 type DecodedToken = {
   googleId?: string;
@@ -45,6 +46,8 @@ export async function GET(req: NextRequest) {
     const decoded = jwt.verify(token, JWT_SECRET) as DecodedToken;
     const { googleId, email, name, picture } = decoded;
 
+    const premium = isPremiumEmail(email);
+
     return NextResponse.json(
       {
         user: {
@@ -52,6 +55,7 @@ export async function GET(req: NextRequest) {
           email: email ?? null,
           name: name ?? null,
           picture: picture ?? null,
+          premium,
         },
       },
       { status: 200, headers: { "cache-control": "no-store" } }

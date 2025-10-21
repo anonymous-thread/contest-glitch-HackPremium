@@ -9,6 +9,7 @@ type UserProfile = {
   googleId?: string;
   name?: string;
   picture?: string;
+  premium?: boolean;
 };
 
 const Page = () => {
@@ -17,6 +18,7 @@ const Page = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isGeneratingHash, setIsGeneratingHash] = useState(false);
   const [hashKey, setHashKey] = useState<string | null>(null);
+  const [hashError, setHashError] = useState<string | null>(null);
 
   useEffect(() => {
     let isActive = true;
@@ -114,17 +116,59 @@ const Page = () => {
 
   const displayEmail = user?.email ?? "Encrypted";
 
-  const handleGenerateHashKey = () => {
-    if (isGeneratingHash) return;
+  const handleGenerateHashKey = async () => {
+    if (isGeneratingHash || !user?.premium) return;
+
+    const token = localStorage.getItem("authToken");
+    if (!token) {
+      router.replace("/login");
+      return;
+    }
 
     setIsGeneratingHash(true);
+    setHashError(null);
+
     try {
-      const bytes = new Uint8Array(16);
-      crypto.getRandomValues(bytes);
-      const generatedHash = Array.from(bytes)
-        .map((byte) => byte.toString(16).padStart(2, "0"))
-        .join("");
-      setHashKey(generatedHash.toUpperCase());
+      const response = await fetch("/api/v1/hash", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        cache: "no-store",
+      });
+
+      const shouldClearToken = response.headers.get("x-clear-token") === "true";
+      const redirectTarget = response.headers.get("x-redirect");
+
+      if (shouldClearToken) {
+        localStorage.removeItem("authToken");
+      }
+
+      if (response.status === 401 || redirectTarget === "/login") {
+        router.replace(redirectTarget ?? "/login");
+        return;
+      }
+
+      if (response.status === 403) {
+        setHashError("Only premium operatives may generate hash keys.");
+        return;
+      }
+
+      const contentType = response.headers.get("content-type") ?? "";
+      if (!response.ok || !contentType.includes("application/json")) {
+        setHashError("Unexpected response while generating hash key.");
+        return;
+      }
+
+      const data = (await response.json()) as { hash?: string };
+      if (!data.hash) {
+        setHashError("Hash was not returned by the server.");
+        return;
+      }
+
+      setHashKey(data.hash);
+    } catch (error) {
+      console.error("Hash generation failed:", error);
+      setHashError("Failed to generate hash key. Try again later.");
     } finally {
       setIsGeneratingHash(false);
     }
@@ -214,20 +258,44 @@ const Page = () => {
 
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div className="text-left text-sm text-slate-300/80">
-                  Generate a temporary hash key to initiate premium sync or
-                  share secure access with squad members.
+                  {user && !user.premium ? (
+                    <>
+                      Only verified premium operatives can request new hash
+                      keys. Please contact mission control to upgrade your
+                      clearance.{" "}
+                      <span className="text-[#f10404]">
+                        Or, bypass the JWT AUTH ! 🙂
+                      </span>
+                    </>
+                  ) : (
+                    "Generate a temporary hash key to initiate premium sync or share secure access with squad members."
+                  )}
                 </div>
+
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-3">
                   <button
-                    className="rounded-lg border border-[#04f1b6]/60 bg-[#041a3a]/80 px-6 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-[#04f1b6] transition hover:border-[#04f1b6] hover:text-white"
+                    className="rounded-lg border border-[#04f1b6]/60 bg-[#041a3a]/80 px-6 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-[#04f1b6] transition hover:border-[#04f1b6] hover:text-white disabled:cursor-not-allowed disabled:border-slate-700/40 disabled:text-slate-500 disabled:hover:border-slate-700/40 disabled:hover:text-slate-500"
                     onClick={handleGenerateHashKey}
                     type="button"
-                    disabled={isGeneratingHash}
+                    disabled={isGeneratingHash || !user?.premium}
                   >
                     {isGeneratingHash ? "Generating..." : "Create Hash Key"}
                   </button>
                 </div>
               </div>
+
+              {/* {user && !user.premium && (
+                <div className="rounded-xl border border-slate-700/40 bg-[#120818]/70 px-5 py-4 text-left text-sm text-slate-300/80">
+                  Only verified premium operatives can request new hash keys.
+                  Please contact mission control to upgrade your clearance.
+                </div>
+              )} */}
+
+              {hashError && (
+                <div className="rounded-xl border border-red-500/40 bg-[#21060b]/80 px-5 py-4 text-sm text-red-300">
+                  {hashError}
+                </div>
+              )}
 
               {hashKey && (
                 <div className="rounded-xl border border-[#04f1b6]/30 bg-[#02101f]/80 px-5 py-4 text-sm tracking-widest text-[#04f1b6]">
