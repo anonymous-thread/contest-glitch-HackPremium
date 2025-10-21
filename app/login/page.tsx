@@ -189,7 +189,13 @@ const LoginPage = () => {
   };
 
   return (
-    <main className="relative flex min-h-screen items-center justify-center overflow-hidden px-6 py-20">
+    <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-linear-to-br from-[#01040c] via-[#031029] to-[#020617] px-6 py-20 text-slate-100">
+      <div className="pointer-events-none absolute inset-0">
+        <div className="hacker-grid" />
+        <div className="hacker-scan" />
+        <div className="hacker-noise" />
+      </div>
+
       <section className="relative z-10 w-full max-w-xl">
         <div
           className="relative overflow-hidden rounded-[32px] border border-[#00d492]/35 px-12 py-16"
@@ -234,6 +240,7 @@ const LoginPage = () => {
           </div>
         </div>
       </section>
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-48 bg-linear-to-t from-[#00040a] via-transparent" />
     </main>
   );
 };

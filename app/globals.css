@@ -69,6 +69,52 @@ body {
   animation: hacker-noise-flicker 4s ease-in-out infinite alternate;
 }
 
+.welcome-mesh,
+.welcome-rings,
+.welcome-pulse {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.welcome-mesh {
+  background-image:
+    repeating-linear-gradient(
+      120deg,
+      rgba(4, 241, 182, 0.04) 0,
+      rgba(4, 241, 182, 0.04) 2px,
+      transparent 2px,
+      transparent 36px
+    ),
+    repeating-linear-gradient(
+      -120deg,
+      rgba(19, 94, 189, 0.06) 0,
+      rgba(19, 94, 189, 0.06) 1.5px,
+      transparent 1.5px,
+      transparent 32px
+    );
+  mix-blend-mode: screen;
+  opacity: 0.4;
+  animation: welcome-mesh-shift 24s linear infinite;
+}
+
+.welcome-rings {
+  background-image:
+    radial-gradient(circle at 30% 20%, rgba(4, 241, 182, 0.18) 0, transparent 45%),
+    radial-gradient(circle at 80% 65%, rgba(10, 83, 189, 0.2) 0, transparent 55%),
+    radial-gradient(circle at 50% 50%, rgba(4, 241, 182, 0.08) 0%, transparent 70%);
+  mix-blend-mode: screen;
+  opacity: 0.5;
+}
+
+.welcome-pulse {
+  background: radial-gradient(circle at center, rgba(4, 241, 182, 0.18) 0, rgba(4, 241, 182, 0.04) 48%, transparent 60%);
+  mix-blend-mode: screen;
+  opacity: 0.35;
+  transform-origin: center;
+  animation: welcome-pulse-expand 10s ease-in-out infinite;
+}
+
 @keyframes hacker-grid-shift {
   0% {
     transform: translate3d(0, 0, 0);
@@ -99,5 +145,29 @@ body {
   }
   100% {
     opacity: 0.2;
+  }
+}
+
+@keyframes welcome-mesh-shift {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-36px, -24px, 0);
+  }
+}
+
+@keyframes welcome-pulse-expand {
+  0% {
+    transform: scale(0.94);
+    opacity: 0.18;
+  }
+  50% {
+    transform: scale(1.08);
+    opacity: 0.4;
+  }
+  100% {
+    transform: scale(0.94);
+    opacity: 0.18;
   }
 }
