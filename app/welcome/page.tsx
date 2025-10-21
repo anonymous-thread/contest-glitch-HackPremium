@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import { LogOut } from "lucide-react";
 
 type UserProfile = {
   email?: string;
@@ -129,8 +130,24 @@ const Page = () => {
     }
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem("authToken");
+    setUser(null);
+    router.replace("/login");
+  };
+
   return (
     <main className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-linear-to-br from-[#020712] via-[#031427] to-[#01030a] px-6 py-20 text-slate-100">
+      <button
+        className="group cursor-pointer absolute right-6 top-6 z-20 flex items-center gap-2 rounded-lg border border-slate-700/70 bg-[#020b19]/80 px-4 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-slate-200 transition hover:border-[#04f1b6] hover:text-[#04f1b6] sm:right-8 sm:top-8"
+        onClick={handleLogout}
+        type="button"
+        aria-label="Logout"
+      >
+        <LogOut className="h-4 w-4 transition group-hover:text-[#04f1b6]" />
+        <span>Logout</span>
+      </button>
+
       <div className="pointer-events-none absolute inset-0">
         <div className="welcome-mesh" />
         <div className="welcome-rings" />
@@ -200,14 +217,16 @@ const Page = () => {
                   Generate a temporary hash key to initiate premium sync or
                   share secure access with squad members.
                 </div>
-                <button
-                  className="rounded-lg border border-[#04f1b6]/60 bg-[#041a3a]/80 px-6 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-[#04f1b6] transition hover:border-[#04f1b6] hover:text-white"
-                  onClick={handleGenerateHashKey}
-                  type="button"
-                  disabled={isGeneratingHash}
-                >
-                  {isGeneratingHash ? "Generating..." : "Create Hash Key"}
-                </button>
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-3">
+                  <button
+                    className="rounded-lg border border-[#04f1b6]/60 bg-[#041a3a]/80 px-6 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-[#04f1b6] transition hover:border-[#04f1b6] hover:text-white"
+                    onClick={handleGenerateHashKey}
+                    type="button"
+                    disabled={isGeneratingHash}
+                  >
+                    {isGeneratingHash ? "Generating..." : "Create Hash Key"}
+                  </button>
+                </div>
               </div>
 
               {hashKey && (
