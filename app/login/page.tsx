@@ -123,6 +123,7 @@ const LoginPage = () => {
   }, []);
 
   useEffect(() => {
+    localStorage.removeItem("authToken");
     return () => {
       if (popupMonitorRef.current !== null) {
         window.clearInterval(popupMonitorRef.current);
