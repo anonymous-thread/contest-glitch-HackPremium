@@ -1,0 +1,103 @@
+@import "tailwindcss";
+
+:root {
+  --background: #020610;
+  --foreground: #e3fff6;
+  --accent: #00d492;
+  --panel: rgba(0, 27, 48, 0.72);
+  --muted: #74f5ce;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-accent: var(--accent);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #010409;
+    --foreground: #f2fff9;
+  }
+}
+
+body {
+  background-color: #01040c;
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+  min-height: 100vh;
+  position: relative;
+}
+
+.hacker-grid,
+.hacker-scan,
+.hacker-noise {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.hacker-grid {
+  background-image:
+    linear-gradient(
+      rgba(0, 212, 146, 0.1) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(0, 212, 146, 0.1) 1px,
+      transparent 1px
+    );
+  background-size: 60px 60px;
+  mix-blend-mode: screen;
+  opacity: 0.35;
+  animation: hacker-grid-shift 18s linear infinite;
+}
+
+.hacker-scan {
+  background: linear-gradient(180deg, rgba(0, 212, 146, 0) 20%, rgba(0, 212, 146, 0.12) 50%, rgba(0, 212, 146, 0) 80%);
+  mix-blend-mode: screen;
+  animation: hacker-scan-sweep 6s linear infinite;
+}
+
+.hacker-noise {
+  background-image: radial-gradient(circle at 10% 10%, rgba(0, 212, 146, 0.28) 0, transparent 45%), radial-gradient(circle at 80% 30%, rgba(0, 37, 94, 0.32) 0, transparent 40%), radial-gradient(circle at 40% 80%, rgba(0, 212, 146, 0.22) 0, transparent 45%);
+  filter: blur(0.5px);
+  opacity: 0.25;
+  animation: hacker-noise-flicker 4s ease-in-out infinite alternate;
+}
+
+@keyframes hacker-grid-shift {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-60px, -60px, 0);
+  }
+}
+
+@keyframes hacker-scan-sweep {
+  0% {
+    transform: translateY(-100%);
+  }
+  50% {
+    transform: translateY(0%);
+  }
+  100% {
+    transform: translateY(100%);
+  }
+}
+
+@keyframes hacker-noise-flicker {
+  0% {
+    opacity: 0.15;
+  }
+  50% {
+    opacity: 0.3;
+  }
+  100% {
+    opacity: 0.2;
+  }
+}
