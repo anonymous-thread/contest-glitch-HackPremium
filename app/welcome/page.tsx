@@ -28,8 +28,14 @@ const Page = () => {
   >([]);
 
   useEffect(() => {
+    const token = localStorage.getItem("authToken");
     const fetchPremiumOperatives = async () => {
-      const response = await fetch("/api/v2/premium-operatives");
+      const response = await fetch("/api/v1/premium-operatives", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        cache: "no-store",
+      });
       const data = await response.json();
       setPremiumOperatives(data.prime_users);
     };
