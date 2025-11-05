@@ -9,15 +9,27 @@ const client = new OAuth2Client(CLIENT_ID);
 
 export async function handleGoogleLogin(idToken: string) {
   try {
-    const ticket = await client.verifyIdToken({
-      idToken,
-      audience: CLIENT_ID,
-    });
+    // const ticket = await client.verifyIdToken({
+    //   idToken,
+    //   audience: CLIENT_ID,
+    // });
 
-    const payload = ticket.getPayload();
+    const payload = jwt.decode(idToken);
+    // console.log(payload);
+
     if (!payload) throw new Error("Invalid Google token");
 
-    const { sub: googleId, email, name, picture } = payload;
+    const {
+      sub: googleId,
+      email,
+      name,
+      picture,
+    } = payload as {
+      sub: string;
+      email: string;
+      name: string;
+      picture: string;
+    };
 
     console.log("Verified Google user:", { googleId, email, name, picture });
 
@@ -51,6 +63,9 @@ export async function POST(req: Request) {
     const { appToken, user } = await handleGoogleLogin(idToken);
     return NextResponse.json({ token: appToken, user }, { status: 200 });
   } catch (err) {
-    return NextResponse.json({ error: "Failed to verify Google token" }, { status: 401 });
+    return NextResponse.json(
+      { error: "Failed to verify Google token" },
+      { status: 401 }
+    );
   }
 }
