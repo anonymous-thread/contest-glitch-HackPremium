@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { LogOut } from "lucide-react";
 
@@ -11,6 +11,10 @@ type UserProfile = {
   picture?: string;
   premium?: boolean;
 };
+type PremiumOperative = {
+  name: string;
+  email: string;
+};
 
 const Page = () => {
   const router = useRouter();
@@ -19,7 +23,18 @@ const Page = () => {
   const [isGeneratingHash, setIsGeneratingHash] = useState(false);
   const [hashKey, setHashKey] = useState<string | null>(null);
   const [hashError, setHashError] = useState<string | null>(null);
+  const [premiumOperatives, setPremiumOperatives] = useState<
+    PremiumOperative[]
+  >([]);
 
+  useEffect(() => {
+    const fetchPremiumOperatives = async () => {
+      const response = await fetch("/api/v2/premium-operatives");
+      const data = await response.json();
+      setPremiumOperatives(data.prime_users);
+    };
+    fetchPremiumOperatives();
+  }, []);
   useEffect(() => {
     let isActive = true;
 
@@ -87,32 +102,6 @@ const Page = () => {
     : user?.name
     ? `Welcome ${user.name}`
     : "Welcome Agent";
-
-  const premiumOperatives = useMemo(
-    () => [
-      {
-        name: "Avery Collins",
-        email: "avery.collins@glitchhq.io",
-      },
-      {
-        name: "Morgan Reyes",
-        email: "morgan.reyes@glitchhq.io",
-      },
-      {
-        name: "Jordan Bennett",
-        email: "jordan.bennett@glitchhq.io",
-      },
-      {
-        name: "Rowan Patel",
-        email: "rowan.patel@glitchhq.io",
-      },
-      {
-        name: "Taylor Monroe",
-        email: "taylor.monroe@glitchhq.io",
-      },
-    ],
-    []
-  );
 
   const displayEmail = user?.email ?? "Encrypted";
 

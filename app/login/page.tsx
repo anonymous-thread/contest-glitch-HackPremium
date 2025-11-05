@@ -92,8 +92,6 @@ const LoginPage = () => {
         return;
       }
 
-      console.log("Google ID token:", payload.id_token);
-
       // Send ID token to your backend to verify and issue your own JWT
       try {
         const res = await fetch("/api/auth/google", {
@@ -105,8 +103,6 @@ const LoginPage = () => {
         const responseData = await res.json();
         if (responseData.token) {
           localStorage.setItem("authToken", responseData.token);
-          console.log("Your app JWT:", responseData.token);
-          console.log("Redirecting to welcome page...");
           router.push("/welcome");
         } else {
           console.error("Failed to get app JWT:", responseData);
@@ -114,8 +110,6 @@ const LoginPage = () => {
       } catch (err) {
         console.error("Error sending ID token to backend:", err);
       }
-
-      console.log("Full Google OAuth payload:", payload);
     };
 
     window.addEventListener("message", handleMessage);

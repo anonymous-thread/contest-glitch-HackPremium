@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
-import { isPremiumEmail } from "@/lib/premium-operatives";
+import { isPremiumEmail } from "@/app/api/utils/premium-operatives";
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
@@ -18,7 +18,10 @@ function unauthorized(message: string) {
 export async function GET(req: NextRequest) {
   if (!JWT_SECRET) {
     console.error("JWT_SECRET is not configured for /api/v1/hash");
-    return NextResponse.json({ error: "Server misconfiguration" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Server misconfiguration" },
+      { status: 500 }
+    );
   }
 
   const authHeader = req.headers.get("authorization") ?? "";
@@ -45,7 +48,10 @@ export async function GET(req: NextRequest) {
       .join("")
       .toUpperCase();
 
-    return NextResponse.json({ hash }, { status: 200, headers: { "cache-control": "no-store" } });
+    return NextResponse.json(
+      { hash },
+      { status: 200, headers: { "cache-control": "no-store" } }
+    );
   } catch (error) {
     console.error("Failed to verify JWT in /api/v1/hash:", error);
     return unauthorized("Invalid or expired token");

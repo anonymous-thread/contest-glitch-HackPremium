@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
-import { isPremiumEmail } from "@/lib/premium-operatives";
+import { isPremiumEmail } from "@/app/api/utils/premium-operatives";
 
 type DecodedToken = {
   googleId?: string;
@@ -30,7 +30,10 @@ function unauthorizedResponse(message: string) {
 export async function GET(req: NextRequest) {
   if (!JWT_SECRET) {
     console.error("JWT_SECRET environment variable is not set.");
-    return NextResponse.json({ error: "Server misconfiguration" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Server misconfiguration" },
+      { status: 500 }
+    );
   }
 
   const authHeader = req.headers.get("authorization") ?? "";
