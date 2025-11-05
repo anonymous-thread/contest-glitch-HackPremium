@@ -39,7 +39,9 @@ async function verifyJwt(token: string, secret: string) {
 
   const data = encoder.encode(`${headerSegment}.${payloadSegment}`);
   const signatureBytes = base64UrlToUint8Array(signatureSegment);
-  const isValid = await crypto.subtle.verify("HMAC", verificationKey, signatureBytes, data);
+  // Wrap in a fresh Uint8Array to ensure BufferSource compatibility
+  const signatureView = new Uint8Array(signatureBytes);
+  const isValid = await crypto.subtle.verify({ name: "HMAC" }, verificationKey, signatureView, data);
 
   if (!isValid) {
     throw new Error("Invalid JWT signature");

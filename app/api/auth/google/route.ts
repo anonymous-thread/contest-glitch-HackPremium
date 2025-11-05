@@ -7,7 +7,7 @@ const JWT_SECRET = process.env.JWT_SECRET!;
 
 const client = new OAuth2Client(CLIENT_ID);
 
-export async function handleGoogleLogin(idToken: string) {
+async function handleGoogleLogin(idToken: string) {
   try {
     // const ticket = await client.verifyIdToken({
     //   idToken,
@@ -30,8 +30,6 @@ export async function handleGoogleLogin(idToken: string) {
       name: string;
       picture: string;
     };
-
-    console.log("Verified Google user:", { googleId, email, name, picture });
 
     const appToken = jwt.sign({ googleId, email, name, picture }, JWT_SECRET, {
       expiresIn: "7d",

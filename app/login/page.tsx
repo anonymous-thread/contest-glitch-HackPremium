@@ -85,8 +85,6 @@ const LoginPage = () => {
       sessionStorage.removeItem(STATE_STORAGE_KEY);
       sessionStorage.removeItem(NONCE_STORAGE_KEY);
 
-      if (payload.access_token)
-        console.log("Google access token:", payload.access_token);
       if (!payload.id_token) {
         console.error("No ID token received from Google.");
         return;
