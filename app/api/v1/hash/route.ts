@@ -42,14 +42,18 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    const bytes = crypto.getRandomValues(new Uint8Array(16));
-    const hash = Array.from(bytes)
-      .map((byte) => byte.toString(16).padStart(2, "0"))
-      .join("")
-      .toUpperCase();
-
+    const response = await fetch(
+      "https://glitch-operation.vercel.app/api/v1/contest-submission/2",
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    const data = await response.json();
     return NextResponse.json(
-      { hash },
+      { hash: data.uniqueGeneratedCode },
       { status: 200, headers: { "cache-control": "no-store" } }
     );
   } catch (error) {

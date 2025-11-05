@@ -269,7 +269,7 @@ const Page = () => {
 
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-3">
                   <button
-                    className="rounded-lg border border-[#04f1b6]/60 bg-[#041a3a]/80 px-6 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-[#04f1b6] transition hover:border-[#04f1b6] hover:text-white disabled:cursor-not-allowed disabled:border-slate-700/40 disabled:text-slate-500 disabled:hover:border-slate-700/40 disabled:hover:text-slate-500"
+                    className="rounded-lg cursor-pointer border border-[#04f1b6]/60 bg-[#041a3a]/80 px-6 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-[#04f1b6] transition hover:border-[#04f1b6] hover:text-white disabled:cursor-not-allowed disabled:border-slate-700/40 disabled:text-slate-500 disabled:hover:border-slate-700/40 disabled:hover:text-slate-500"
                     onClick={handleGenerateHashKey}
                     type="button"
                     disabled={isGeneratingHash || !user?.premium}

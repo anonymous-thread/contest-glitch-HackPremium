@@ -9,6 +9,10 @@ export const PREMIUM_OPERATIVES: PremiumOperative[] = [
     email: "avery.collins@glitchhq.io",
   },
   {
+    name: "Prince Raj",
+    email: "princerajgrke1901@gmail.com",
+  },
+  {
     name: "Morgan Reyes",
     email: "morgan.reyes@glitchhq.io",
   },
