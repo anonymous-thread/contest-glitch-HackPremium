@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { LogOut } from "lucide-react";
+import { LogOut, Copy, Check } from "lucide-react";
 
 type UserProfile = {
   email?: string;
@@ -23,6 +23,7 @@ const Page = () => {
   const [isGeneratingHash, setIsGeneratingHash] = useState(false);
   const [hashKey, setHashKey] = useState<string | null>(null);
   const [hashError, setHashError] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
   const [premiumOperatives, setPremiumOperatives] = useState<
     PremiumOperative[]
   >([]);
@@ -175,6 +176,15 @@ const Page = () => {
     router.replace("/login");
   };
 
+  const handleCopy = async () => {
+    if (!hashKey) return;
+    try {
+      await navigator.clipboard.writeText(hashKey);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {}
+  };
+
   return (
     <main className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-linear-to-br from-[#020712] via-[#031427] to-[#01030a] px-6 py-20 text-slate-100">
       <button
@@ -293,8 +303,26 @@ const Page = () => {
               )}
 
               {hashKey && (
-                <div className="rounded-xl border border-[#04f1b6]/30 bg-[#02101f]/80 px-5 py-4 text-sm tracking-widest text-[#04f1b6]">
-                  {hashKey}
+                <div className="flex items-center justify-between gap-3 rounded-xl border border-[#04f1b6]/30 bg-[#02101f]/80 px-5 py-4 text-sm text-[#04f1b6]">
+                  <span className="truncate tracking-widest">{hashKey}</span>
+                  <button
+                    type="button"
+                    onClick={handleCopy}
+                    className="group flex items-center gap-2 rounded-md border border-[#04f1b6]/40 px-3 py-1.5 text-xs uppercase tracking-[0.2em] text-[#04f1b6] transition hover:border-[#04f1b6] hover:text-white"
+                    aria-label="Copy to clipboard"
+                  >
+                    {copied ? (
+                      <>
+                        <Check className="h-4 w-4" />
+                        <span>Copied</span>
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="h-4 w-4" />
+                        <span>Copy</span>
+                      </>
+                    )}
+                  </button>
                 </div>
               )}
             </div>
