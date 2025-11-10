@@ -43,7 +43,7 @@ export async function GET(req: NextRequest) {
     }
 
     const response = await fetch(
-      "https://glitch-operation.vercel.app/api/v1/contest-submission/5",
+      "https://glitch-operation.vercel.app/api/v1/contest-submission/2",
       {
         method: "GET",
         headers: {
